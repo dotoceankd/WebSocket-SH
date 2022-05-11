@@ -214,6 +214,12 @@ bool Endpoint::create_client_proxy(
     _encoding->add_type(request_type, request_type.name());
     _encoding->add_type(reply_type, reply_type.name());
 
+    // add to connection msgs so the other side knowns we have these services
+    // also, by executing encode_advertise_service_msg we add the types to the services
+    _startup_messages.emplace_back(
+        _encoding->encode_advertise_service_msg(service_name, request_type.name(), reply_type.name(), "", configuration));
+
+
     return true;
 }
 
