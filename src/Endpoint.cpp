@@ -400,7 +400,7 @@ namespace eprosima
                     }
                     else
                     {
-                        _logger << utils::Logger::Level::INFO
+                        _logger << utils::Logger::Level::DEBUG
                                 << "Called service '" << service << "' with request type '"
                                 << request.type().name() << "', data: [[ " << payload << " ]]" << std::endl;
                     }
@@ -458,7 +458,7 @@ namespace eprosima
                     }
                     else
                     {
-                        _logger << utils::Logger::Level::INFO
+                        _logger << utils::Logger::Level::DEBUG
                                 << "Received response from service: [[ " << payload << " ]]" << std::endl;
                     }
                 }
