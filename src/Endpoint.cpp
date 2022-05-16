@@ -363,12 +363,14 @@ namespace eprosima
                     std::shared_ptr<void> call_handle)
                 {
                     std::size_t id = 0;
+                    std::string id_str;
                     {
                         const std::lock_guard<std::mutex> lock(_next_service_call_id_mutex);
                         id = _next_service_call_id++;
+
+                        id_str = std::to_string(id);
+                        _service_request_info[id_str] = {&client, std::move(call_handle)};
                     }
-                    const std::string id_str = std::to_string(id);
-                    _service_request_info[id_str] = {&client, std::move(call_handle)};
 
                     ServiceProviderInfo &provider_info = _service_provider_info.at(service);
 
@@ -401,7 +403,7 @@ namespace eprosima
                     else
                     {
                         _logger << utils::Logger::Level::DEBUG
-                                << "Called service '" << service << "' with request type '"
+                                << "Service request " << id << ":: Called service '" << service << "' with request type '"
                                 << request.type().name() << "', data: [[ " << payload << " ]]" << std::endl;
                     }
                 }
@@ -519,9 +521,9 @@ namespace eprosima
                 {
                     try
                     {
-                        _logger << utils::Logger::Level::DEBUG
-                                << "Received message on subscriber '" << topic_name
-                                << "', data: [[ " << json_xtypes::convert(message) << " ]]" << std::endl;
+                        /* _logger << utils::Logger::Level::DEBUG
+                                 << "Received message on subscriber '" << topic_name
+                                 << "', data: [[ " << json_xtypes::convert(message) << " ]]" << std::endl;*/
 
                         auto it = _topic_subscribe_info.find(topic_name);
                         if (it == _topic_subscribe_info.end())
@@ -749,7 +751,7 @@ namespace eprosima
                         ServiceRequestInfo &info = it->second;
 
                         _logger << utils::Logger::Level::DEBUG
-                                << "Receive response for service '" << service_name << "', data: [[ "
+                                << "Service response " << id << ":: Receive response for service '" << service_name << "', data: [[ "
                                 << json_xtypes::convert(response) << " ]]" << std::endl;
 
                         info.client->receive_response(info.call_handle, response);
